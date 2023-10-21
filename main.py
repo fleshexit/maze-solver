@@ -1,6 +1,7 @@
 import pygame
 import cell
 from grid import Grid
+from maze import Mazes
 
 pygame.init()
 width = 800
@@ -43,6 +44,20 @@ def main():
                     end.make_end()
                 elif cell != end and cell != start:
                     cell.make_barrier()
+
+            elif pygame.mouse.get_pressed()[2]:
+                pos = pygame.mouse.get_pos()
+                row, col = gameboard.get_clicked_pos(pos)
+                cell = gameboard.grid[row][col]
+                cell.reset()
+                if cell == start:
+                    start = None
+                elif cell == end:
+                    end = None
+            
+
+
+
     pygame.quit()
 
 main()
