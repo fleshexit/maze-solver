@@ -8,7 +8,7 @@ class Grid:
         self.rows = rows
         self.width = width
         self.grid = []
-        self.create_grid()
+        self.create()
 
     def create(self):
         gap = self.width // self.rows
