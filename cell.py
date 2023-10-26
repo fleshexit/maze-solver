@@ -1,11 +1,14 @@
 import pygame
+from config import Settings
 
 
 class Cell:
     
-    def __init__(self, i, j):
-        self.x = i
-        self.y = j
+    def __init__(self, xpos, ypos):
+        self.x = xpos
+        self.y = ypos
+        self.width = Settings.window_width // Settings.rows
+
         self.f, self.g, self.h = 0, 0, 0 # f = g + h 
         self.start = False
         self.blocked = False
