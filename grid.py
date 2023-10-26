@@ -1,6 +1,7 @@
 import pygame
 from config import Colors
 from cell import Cell
+import random
 
 class Grid:
 
@@ -11,23 +12,23 @@ class Grid:
         self.create()
 
     def create(self):
-        gap = self.width // self.rows
         for i in range(self.rows):
-            self.grid.append([])
+            colArray = []
             for j in range(self.rows):
-                cell = Cell(i, j, gap, self.rows)
-                self.grid[i].append(cell)
-        
-        return self.grid
-
-    def draw_grid(self, screen):
-        gap = self.width // self.rows
-        for i in range(self.rows):
-            pygame.draw.line(screen, Colors.grey, (0, i * gap), (self.width, i * gap))
-            for j in range(self.rows):
-                pygame.draw.line(screen, Colors.grey, (j * gap, 0), (j * gap, self.width))
-            
+                cell = Cell(i, j)
+                colArray.append(cell)
+            self.grid.append(colArray)
     
+        self.start_cell = self.grid[1][1]
+        self.start_cell.start = True
+        self.start_cell.visited = True
+        
+    
+    def find_neighbours(self):
+        for row in self.grid:
+            for cell in row:
+                cell.set_neighbours(self.grid, self.rows, self.rows)
+            
     def draw(self, screen):
         screen.fill(Colors.white)
 
@@ -46,14 +47,20 @@ class Grid:
         col = x // gap
 
         return row, col
-
-    def get_grid(self):
-        return self.grid
     
-    def get_dimensions(self):
-        return {
-            'rows': self.rows,
-            'width': self.width
-        }
+    def reset(self):
+        for row in self.grid:
+            for cell in row:
+                cell.blocked = False
+                cell.visited = False
+                cell.queued = False
+                cell.path = False
+                cell.end = False
+                cell.start = False
                 
-        
+    def place_mines(self):
+        self.reset()
+        for row in self.grid:
+            for cell in row:
+                if random.randint(0, 10) < 3:
+                    cell.blocked = True
