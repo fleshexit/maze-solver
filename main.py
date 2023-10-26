@@ -9,6 +9,7 @@ screen = pygame.display.set_mode((width, width))
 pygame.display.set_caption("Maze Solver")
 #icon = pygame.image.load('maze.png')
 
+
 def h(p1, p2):
     x1, y1 = p1
     x2, y2 = p2
