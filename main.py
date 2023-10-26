@@ -57,8 +57,6 @@ def main():
                     end = None
             
 
-
-
     pygame.quit()
 
 main()
