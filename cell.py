@@ -1,61 +1,37 @@
 import pygame
-from config import Colors
+
 
 class Cell:
-
-    def __init__(self, row, col, width, total_rows):
-        self.row = row
-        self.col = col
-        self.x = row * width
-        self.y = col * width
-        self.colour = Colors.white
-        self.width = width
-        self.total_rows = total_rows
     
-    def get_pos(self):
-        return self.row, self.col
-
-    def is_closed(self):
-        return self.colour == Colors.red
+    def __init__(self, i, j):
+        self.x = i
+        self.y = j
+        self.f, self.g, self.h = 0, 0, 0 # f = g + h 
+        self.start = False
+        self.blocked = False
+        self.end =  False
+        self.queued = False # whether the cell is queued to be visited
+        self.visited = False # whether the cell has been visited
+        self.neighbours = [] # neighbours of the cell 
+        self.prior = None # the cell that caused this cell to be set as a neighbour
     
-    def is_open(self):
-        return self.colour == Colors.green
+    def draw(self, win, colour, shape=1):
+        if shape == 1: 
+            pygame.draw.rect( # draws regular square cell
+                win, colour,(
+                    self.x * self.width, self.y * self.width, self.width - 1, self.width - 1)) 
+        else:
+            pygame.draw.circle( # draws circular cell that will be contained within a square cell
+                win, colour, (
+                    self.x * self.width + self.width // 2, self.y * self.width + self.width // 2), self.width // 3)
 
-    def is_barrier(self):
-        return self.colour == Colors.black
+    def set_neighbours(self, grid, cols, rows):
 
-    def is_start(self):
-        return self.colour == Colors.orange
-    
-    def is_end(self):
-        return self.colour == Colors.purple
-    
-    def reset(self):
-        self.colour = Colors.white
-
-    def make_start(self):
-        self.colour = Colors.orange
-
-    def make_closed(self):
-        self.colour = Colors.red
-
-    def make_open(self):
-        self.colour = Colors.green
-    
-    def make_barrier(self):
-        self.colour = Colors.black
-    
-    def make_end(self):
-        self.colour = Colors.purple
-    
-    def make_path(self):
-        self.colour = Colors.yellow
-    
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.colour, (self.x, self.y, self.width, self.width))
-
-    def update_neighbours(self, grid):
-        pass
-
-    def __lt__(self, other):
-        return False
+        if self.x > 0:
+            self.neighbours.append(grid[self.x - 1][self.y]) # adds horizontal neighbouring cells to an array
+        if self.x < cols - 1:
+            self.neighbours.append(grid[self.x + 1][self.y])
+        if self.y > 0:
+            self.neighbours.append(grid[self.x][self.y - 1]) # adds horizontal neighbouring cells to an array
+        if self.y < rows - 1:
+            self.neighbours.append(grid[self.x][self.y + 1])
