@@ -22,3 +22,10 @@ class Colors:
     olive = (128, 128, 0)
     teal = (0, 128, 128)
     violet = (238, 130, 238)
+
+
+class Settings:
+
+    window_width = 500
+    rows = 25
+    cols = 25
