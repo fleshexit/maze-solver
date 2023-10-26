@@ -21,22 +21,22 @@ def main():
 
     end_selected = False
     searching = False
+    terrain_generated = False
+    times_clicked = 0
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
     
-            if pygame.mouse.get_pressed()[0]: 
+            if pygame.mouse.get_pressed()[0] and terrain_generated: 
                 pos = pygame.mouse.get_pos()
                 i, j = gameboard.get_clicked_pos(pos)
                 gameboard.grid[i][j].blocked = True
 
-            elif pygame.mouse.get_pressed()[2]:
+            elif pygame.mouse.get_pressed()[2] and terrain_generated:
                 pos = pygame.mouse.get_pos()
-                row, col = gameboard.get_clicked_pos(pos)
-                cell = gameboard.grid[row][col]
-                cell.blocked = False
+                i, j = gameboard.get_clicked_pos(pos)
                 if cell.start or cell.end:
                     continue
                 if not end_selected:
@@ -45,6 +45,18 @@ def main():
                     end_selected = True
                 else:
                     gameboard.grid[i][j].blocked = False
+                
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    terrain_generated = True
+                    times_clicked += 1
+                    if times_clicked == 1:
+                        gameboard.place_mines()
+                if event.key == pygame.constants.K_r:
+                    gameboard.reset()
+
+                    
+
 
         screen.fill(Colors.black)
         for i in range(Settings.cols):
