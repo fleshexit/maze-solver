@@ -46,5 +46,14 @@ class Grid:
         col = x // gap
 
         return row, col
+
+    def get_grid(self):
+        return self.grid
+    
+    def get_dimensions(self):
+        return {
+            'rows': self.rows,
+            'width': self.width
+        }
                 
         
