@@ -56,11 +56,11 @@ class Grid:
                 cell.queued = False
                 cell.path = False
                 cell.end = False
-                cell.start = False
                 
     def place_mines(self):
         self.reset()
         for row in self.grid:
             for cell in row:
                 if random.randint(0, 10) < 3:
-                    cell.blocked = True
+                    if not cell.start and not cell.end:
+                        cell.blocked = True
