@@ -2,10 +2,11 @@ import pygame
 import cell
 from grid import Grid
 from maze import Mazes
+from config import Colors, Settings
+
 
 pygame.init()
-width = 800
-screen = pygame.display.set_mode((width, width))
+screen = pygame.display.set_mode((Settings.window_width, Settings.window_width))
 pygame.display.set_caption("Maze Solver")
 #icon = pygame.image.load('maze.png')
 
@@ -16,47 +17,50 @@ def h(p1, p2):
     return (abs(x1-x2) + abs(y1-y2))
 
 def main():
-    rows = 50
-    gameboard = Grid(rows, width)
+    gameboard = Grid(Settings.rows, Settings.window_width)
 
-    start = None
-    end = None
-
-    run = True
+    end_selected = False
     searching = False
 
-    while run:
-        gameboard.draw(screen)
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
-            if searching:
-                continue
+                pygame.quit()
     
             if pygame.mouse.get_pressed()[0]: 
                 pos = pygame.mouse.get_pos()
-                row, col = gameboard.get_clicked_pos(pos)
-                cell = gameboard.grid[row][col]
-                if not start and cell != end:
-                    start = cell
-                    start.make_start()
-                elif not end and cell != start:
-                    end = cell
-                    end.make_end()
-                elif cell != end and cell != start:
-                    cell.make_barrier()
+                i, j = gameboard.get_clicked_pos(pos)
+                gameboard.grid[i][j].blocked = True
 
             elif pygame.mouse.get_pressed()[2]:
                 pos = pygame.mouse.get_pos()
                 row, col = gameboard.get_clicked_pos(pos)
                 cell = gameboard.grid[row][col]
-                cell.reset()
-                if cell == start:
-                    start = None
-                elif cell == end:
-                    end = None
-            
+                cell.blocked = False
+                if cell.start or cell.end:
+                    continue
+                if not end_selected:
+                    end_cell = gameboard.grid[i][j]
+                    end_cell.end = True
+                    end_selected = True
+                else:
+                    gameboard.grid[i][j].blocked = False
 
-    pygame.quit()
+        screen.fill(Colors.black)
+        for i in range(Settings.cols):
+            for j in range(Settings.rows):
+                cell = gameboard.grid[i][j]
+                cell.draw(screen, (Colors.silver))    
 
-main()
+                if cell.start:
+                    cell.draw(screen, (Colors.green))
+                if cell.end:
+                    cell.draw(screen, (Colors.red))
+                if cell.blocked:
+                    cell.draw(screen, (Colors.black))
+        
+        pygame.display.flip()
+
+if __name__ == '__main__':
+
+    main()
