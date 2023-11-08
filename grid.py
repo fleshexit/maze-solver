@@ -10,6 +10,7 @@ class Grid:
         self.width = width
         self.grid = []
         self.create()
+        self.find_neighbours()
 
     def create(self):
         for i in range(self.rows):
@@ -20,9 +21,8 @@ class Grid:
             self.grid.append(colArray)
     
         self.start_cell = self.grid[1][1]
-        self.start_cell.start = True
         self.start_cell.visited = True
-        
+        self.start_cell.start = True
     
     def find_neighbours(self):
         for row in self.grid:
