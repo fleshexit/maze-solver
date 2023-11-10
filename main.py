@@ -10,76 +10,23 @@ pygame.init()
 screen = pygame.display.set_mode((Settings.window_width, Settings.window_width))
 pygame.display.set_caption("Maze Solver")
 #icon = pygame.image.load('maze.png')
-
-class SearchAlgorithm:
-
-    def __init__(self, start, end):
-        self.start = start
-        self.target = end
-        self.path = []
-        self.queue = []
-
-    def heuristic(self, p1, p2):
-        x1, y1 = p1
-        x2, y2 = p2
-        return (abs(x1-x2) + abs(y1-y2))
-
-    def a_star(self):
-        open_set = []
-        closed_set = set()
-        heapq.heappush(open_set, (0, self.start))
-        came_from = {}
-
-        g_score = {cell: float('inf') for row in self.grid for cell in row}
-        g_score[self.start] = 0
-        f_score = {cell: float('inf') for row in self.grid for cell in row}
-        f_score[self.start] = self.heuristic(self.start, self.target)
-
-        while open_set:
-            current = heapq.heappop(open_set)[1]
-
-            if current == self.target:
-                path = []
-                while current in came_from:
-                    path.append(current)
-                    current = came_from[current]
-                self.path = path
-                return True
-
-            closed_set.add(current)
-
-            for neighbor in current.neighbors:
-                if neighbor.blocked or neighbor in closed_set:
-                    continue
-
-                tentative_g_score = g_score[current] + 1
-
-                if tentative_g_score < g_score[neighbor]:
-                    came_from[neighbor] = current
-                    g_score[neighbor] = tentative_g_score
-                    f_score[neighbor] = tentative_g_score + self.heuristic(neighbor, self.target)
-                    if neighbor not in open_set:
-                        heapq.heappush(open_set, (f_score[neighbor], neighbor))
-
-        return False
-
-    def begin(self, grid):
-        self.grid = grid  # Set the grid
-        if self.a_star():
-            for cell in self.path:
-                cell.visited = True
-        else:
-            print("No path found")
             
+
+queue = []
+closed_set = []
+path = []
+
 
 def main():
     gameboard = Grid(Settings.rows, Settings.window_width)
 
     end_selected = False
     end_cell = None
-    search = SearchAlgorithm(gameboard.start_cell, end_cell)
+
     
     terrain_generated = False
+    search_started = False
+    searching = True
     times_clicked = 0
 
     while True:
@@ -113,8 +60,27 @@ def main():
                 if event.key == pygame.constants.K_r:
                     gameboard.reset()
                 if event.key == pygame.constants.K_f and end_selected:
-                    search.begin(gameboard.grid)
-            
+                    search_started = True
+        
+        if search_started:
+            if len(queue) > 0 and searching:
+                current_cell = queue.pop(0)
+                current_cell.visited = True
+                if current_cell == end_cell:
+                    searching = False
+                    while current_cell.prior != gameboard.start_cell:
+                        path.append(current_cell.prior)
+                        current_cell = current_cell.prior
+                else:
+                    for neighbour in current_cell.neighbours:
+                        if not neighbour.queued and not neighbour.blocked:
+                            neighbour.queued = True
+                            neighbour.prior = current_cell
+                            queue.append(neighbour)
+            else:
+                if searching:
+                    print("No path found")
+                    searching = False
                     
         screen.fill(Colors.black)
         for i in range(Settings.cols):
@@ -122,7 +88,7 @@ def main():
                 cell = gameboard.grid[i][j]
                 cell.draw(screen, (Colors.white))    
 
-                if cell in search.path:
+                if cell in path:
                     cell.draw(screen, (Colors.green))
                 if cell.queued:
                     cell.draw(screen, (255, 200, 0))
