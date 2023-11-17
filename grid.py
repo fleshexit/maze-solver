@@ -3,6 +3,31 @@ from config import Colors
 from cell import Cell
 import random
 
+class Splash:
+
+    letter_patterns = {
+        'A': [
+            "011",
+            "101",
+            "111",
+            "101",
+            "101"
+        ],
+    }
+
+    def draw_letter(grid, letter, start_x, start_y):
+        pattern = Splash.letter_patterns.get(letter, [])
+        if not pattern:
+            print(f"Letter {letter} not supported")
+            return
+        
+        for y, row in enumerate(pattern):
+            for x, char in enumerate(row):
+                if char == '1':
+                    grid[start_y + y][start_x + x].blocked = True
+
+
+
 class Grid:
 
     def __init__(self, rows, width):
