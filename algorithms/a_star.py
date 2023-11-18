@@ -1,4 +1,4 @@
-from pathfinding import Pathfinder
+from algorithms.pathfinding import Pathfinder
 
 class A_star(Pathfinder):
 
