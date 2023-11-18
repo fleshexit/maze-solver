@@ -1,9 +1,9 @@
 import pygame
 import heapq
 
-import cell
-from grid import Grid
-from maze import Mazes
+import grid.cell as cell
+from grid.grid import Grid
+from mazes.maze import Mazes
 from config import Colors, Settings
 
 pygame.init()
