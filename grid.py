@@ -6,18 +6,54 @@ import random
 class Splash:
 
     letter_patterns = {
+        'P': [
+            "111",
+            "101",
+            "111",
+            "100",
+            "100"
+        ],
+        'R': [
+            "111",
+            "101",
+            "110",
+            "101",
+            "101"
+        ],
+        'E': [
+            "111",
+            "100",
+            "111",
+            "100",
+            "111"
+        ],
+        'S': [
+            "111",
+            "100",
+            "111",
+            "001",
+            "111"
+        ],
         'A': [
-            "011",
+            "111",
             "101",
             "111",
             "101",
             "101"
         ],
+        'C': [
+            "111",
+            "100",
+            "100",
+            "100",
+            "111"
+        ]
+
     }
 
     def draw(grid, word, start_x, start_y):
         for i, letter in enumerate(word):
-            Splash.draw_letter(grid, letter, start_x + i * 4, start_y)
+            Splash.draw_letter(grid, letter, start_x, start_y + i * 4)
 
 
     def draw_letter(grid, letter, start_x, start_y):
@@ -26,11 +62,10 @@ class Splash:
             print(f"Letter {letter} not supported")
             return
         
-        for y, row in enumerate(pattern):
-            for x, char in enumerate(row):
+        for x, row in enumerate(pattern):
+            for y, char in enumerate(row):
                 if char == '1':
                     grid[start_y + y][start_x + x].blocked = True
-
 
 class Grid:
 
@@ -52,6 +87,9 @@ class Grid:
         self.start_cell = self.grid[1][1]
         self.start_cell.visited = True
         self.start_cell.start = True
+
+        Splash.draw(self.grid, "PRESS", 3, 3)
+        Splash.draw(self.grid, "SPACE", 9, 3)
     
     def find_neighbours(self):
         for row in self.grid:
