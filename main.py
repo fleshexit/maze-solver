@@ -7,7 +7,9 @@ from config import Colors, Settings
 pygame.init()
 screen = pygame.display.set_mode((Settings.window_width, Settings.window_width))
 pygame.display.set_caption("Maze Solver")
-            
+
+icon = pygame.image.load('assets/icon.png')
+pygame.display.set_icon(icon)
 
 def main():
     gameboard = Grid(Settings.rows, Settings.window_width)
