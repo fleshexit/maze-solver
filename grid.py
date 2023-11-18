@@ -15,6 +15,11 @@ class Splash:
         ],
     }
 
+    def draw(grid, word, start_x, start_y):
+        for i, letter in enumerate(word):
+            Splash.draw_letter(grid, letter, start_x + i * 4, start_y)
+
+
     def draw_letter(grid, letter, start_x, start_y):
         pattern = Splash.letter_patterns.get(letter, [])
         if not pattern:
@@ -25,7 +30,6 @@ class Splash:
             for x, char in enumerate(row):
                 if char == '1':
                     grid[start_y + y][start_x + x].blocked = True
-
 
 
 class Grid:
