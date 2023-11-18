@@ -3,7 +3,6 @@ import grid.cell as cell
 from grid.grid import Grid
 from mazes.maze import Mazes
 from config import Colors, Settings
-from algorithms.pathfinding import Pathfinder
 
 pygame.init()
 screen = pygame.display.set_mode((Settings.window_width, Settings.window_width))

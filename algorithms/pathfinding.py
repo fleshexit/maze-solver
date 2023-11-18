@@ -1,4 +1,3 @@
-from algorithms.a_star import A_star
 
 class Pathfinder:
 
